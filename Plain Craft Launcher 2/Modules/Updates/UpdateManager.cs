@@ -10,6 +10,11 @@ namespace PCL;
 
 public static class UpdateManager
 {
+    /// <summary>
+    ///     本构建固定禁用启动器自动更新，避免构建产物被官方版本覆盖。
+    /// </summary>
+    public const bool AutoUpdateDisabled = true;
+
     public static bool isUpdateWaitingRestart;
 
     public static UpdatesWrapperModel remoteServer = new(new List<IUpdateSource>
@@ -243,6 +248,14 @@ public static class UpdateManager
 
     private static void ScheduleBasedOnConfig()
     {
+        // 自动更新已关闭：不再自动检查、下载或安装启动器更新
+        if (AutoUpdateDisabled)
+        {
+            isUpdateWaitingRestart = false;
+            ModBase.Log("[Update] 自动更新已关闭，跳过启动器自动更新检查");
+            return;
+        }
+
         switch (Config.Update.UpdateMode)
         {
             case LauncherAutoUpdateBehavior.DownloadAndInstall:

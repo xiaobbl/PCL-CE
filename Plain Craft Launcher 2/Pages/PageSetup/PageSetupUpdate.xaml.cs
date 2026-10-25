@@ -24,7 +24,16 @@ public partial class PageSetupUpdate
         TextMirrorCDK.Password = Config.Update.MirrorChyanKey;
 
         ComboSystemUpdateChannel.SelectedIndex = (int)Config.Update.UpdateChannel;
-        ComboSystemUpdateMode.SelectedIndex = (int)Config.Update.UpdateMode;
+        if (UpdateManager.AutoUpdateDisabled)
+        {
+            Config.Update.UpdateMode = LauncherAutoUpdateBehavior.Disable;
+            ComboSystemUpdateMode.SelectedIndex = (int)LauncherAutoUpdateBehavior.Disable;
+            ComboSystemUpdateMode.IsEnabled = false;
+        }
+        else
+        {
+            ComboSystemUpdateMode.SelectedIndex = (int)Config.Update.UpdateMode;
+        }
 
         TextCurrentVersion.Text = "PCL CE " + VersionNameFormat(ModBase.versionBaseName);
         ModAnimation.AniEndControl();
